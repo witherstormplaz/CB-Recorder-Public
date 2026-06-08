@@ -38,7 +38,7 @@ Record to a specific output folder:
 python main.py https://chaturbate.com/username/ -o "D:/my_recordings"
 ```
 
-### Private / Password-protected Streams
+### Private streams
 If a stream requires you to be logged into an account with specific permissions, you can instruct the script to use the cookies from your browser session to authenticate:
 
 ```bash
