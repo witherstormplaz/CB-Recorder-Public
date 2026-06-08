@@ -12,7 +12,7 @@ You must have [ffmpeg](https://ffmpeg.org/download.html) installed and added to 
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/chaturbate-stream-recorder.git
+   git clone https://github.com/witherstormplaz/chaturbate-stream-recorder.git
    cd chaturbate-stream-recorder
    ```
 
