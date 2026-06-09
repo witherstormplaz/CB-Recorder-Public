@@ -1,27 +1,45 @@
-# Chaturbate Stream Recorder
+# Chaturbate Stream Recorder V2 
 
-A robust, multi-process python script for recording Chaturbate livestreams seamlessly without frame drops or corruption. 
+A hyper-premium, standalone Desktop Application for recording Chaturbate livestreams seamlessly without frame drops or corruption. 
 
-Because Chaturbate uses Low Latency HLS (LL-HLS) and serves video and audio as entirely separate streams, traditional `ffmpeg` recording often drops packets, causing jumpy or "fast-forwarding" videos. This tool solves the problem by extracting the core URLs via **yt-dlp**, downloading the video and audio concurrently using **Streamlink** (which is explicitly built for live streaming architectures), and only merging them with ffmpeg after the stream has safely concluded.
+V2 features a stunning, physics-based **Liquid Glass UI** built with Electron, React, and Framer Motion. Under the hood, it uses our robust Python multi-process backend to solve the classic LL-HLS desync issue.
 
-## Requirements
+![Recorder V2 UI](https://github.com/witherstormplaz/CB-Recorder-Public/raw/master/frontend/src/assets/hero.png)
 
-You must have [ffmpeg](https://ffmpeg.org/download.html) installed and added to your system's PATH.
+## Why This Exists
 
-## Installation
+Because Chaturbate uses Low Latency HLS (LL-HLS) and serves video and audio as entirely separate streams, traditional `ffmpeg` recording often drops packets, causing jumpy or "fast-forwarding" videos, and broken Audio/Video Sync. 
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/witherstormplaz/chaturbate-stream-recorder.git
-   cd chaturbate-stream-recorder
-   ```
+This tool solves the problem entirely by:
+1. Extracting the core URLs via **yt-dlp**.
+2. Downloading the video and audio concurrently using **Streamlink** (which is explicitly built for live streaming architectures).
+3. Safely merging and perfectly synchronizing the timestamps using a custom `ffmpeg` pipeline only after the stream has safely concluded.
 
-2. Install the required python packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
+---
 
-## Usage
+## 🚀 1-Click Installation (Windows)
+
+We have packaged the entire application so it can be installed and launched instantly without touching a terminal.
+
+1. Install **[Python 3.10+](https://www.python.org/downloads/)** and **[Node.js](https://nodejs.org/)**.
+2. Install **[FFmpeg](https://ffmpeg.org/download.html)** and ensure it is added to your system's PATH.
+3. Clone this repository or Download the ZIP.
+4. Double-click the **`Start.bat`** file.
+
+The script will automatically detect your environment, silently install all necessary Python and React dependencies, and instantly launch the Liquid Glass UI.
+
+## Features
+
+- **Liquid Glass Aesthetic:** Dynamic, warm glow aesthetics with real-time physics and mouse-tracking refraction glares.
+- **Live Terminal Pipeline:** Real-time stdout logs stream directly from the Python backend into the UI's sliding glass terminal.
+- **Flawless A/V Sync:** Safely extracts the internal HLS timestamps to keep audio and video 100% perfectly synced without expensive video re-encoding.
+- **Browser Authentication:** Built-in drop-down to extract cookies directly from Chrome, Edge, or Firefox so you can record age-restricted or private streams.
+
+---
+
+## CLI Usage (Advanced)
+
+If you prefer to bypass the UI and use the raw backend engine on a headless server, the core python script is still fully accessible.
 
 Basic recording (runs indefinitely until you press `Ctrl+C`):
 ```bash
@@ -33,33 +51,16 @@ Record for a specific duration (e.g. 60 seconds):
 python main.py https://chaturbate.com/username/ -d 60
 ```
 
-Record to a specific output folder:
-```bash
-python main.py https://chaturbate.com/username/ -o "D:/my_recordings"
-```
-
-### Private streams
-If a stream requires you to be logged into an account with specific permissions, you can instruct the script to use the cookies from your browser session to authenticate:
-
+Record using Browser Cookies:
 ```bash
 python main.py https://chaturbate.com/username/ --cookies-from-browser chrome
 ```
+
 *(Supported browsers: chrome, firefox, edge, opera, brave, vivaldi, safari)*
-
-Alternatively, if you have a `cookies.txt` file exported via an extension like "Get cookies.txt LOCALLY", you can pass it directly:
-```bash
-python main.py https://chaturbate.com/username/ -c cookies.txt
-```
-
-## How It Works under the hood
-1. Queries the target page using `yt-dlp` to uncover the hidden m3u8 playlist URLs for both the raw video and raw audio feeds.
-2. Spawns two independent, multi-threaded `streamlink` instances.
-3. Streamlink concurrently pulls down raw `.ts` chunks from the server with aggressive retry caching, completely eliminating packet loss.
-4. Upon pressing `Ctrl+C` or reaching the time limit, the script cleanly cuts off the background workers and fires an `ffmpeg` command to mux the temporary TS streams into a perfect, standard `.mp4` container.
 
 ---
 
-## The Future: V2
-We are currently planning a massive **V2 upgrade** to transition this tool from a simple CLI script into a full standalone desktop application featuring a modern, physics-based **Liquid Glass UI**. 
-
-If you are interested in how the App will be structured, check out the [V2_PLAN.md](V2_PLAN.md) document in this repository!
+### Technical Architecture
+- **Frontend:** Electron, Vite, React, Tailwind CSS v4, Framer Motion
+- **Backend:** Python 3.10, Streamlink, yt-dlp
+- **IPC Bridge:** Custom Node `child_process` piping standard POSIX signals and stdin/stdout streams for graceful process termination.
