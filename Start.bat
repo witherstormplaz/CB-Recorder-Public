@@ -18,7 +18,7 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 :: 2. Check Node
-npm -v >nul 2>&1
+call npm -v >nul 2>&1
 IF %ERRORLEVEL% NEQ 0 (
     color 0c
     echo [ERROR] Node.js is not installed or not in your system PATH!
@@ -29,7 +29,7 @@ IF %ERRORLEVEL% NEQ 0 (
 
 :: 3. Install Python Dependencies
 echo [1/3] Checking/Installing Python Backend Dependencies...
-pip install -r requirements.txt --quiet
+call python -m pip install -r requirements.txt --quiet
 IF %ERRORLEVEL% NEQ 0 (
     color 0c
     echo [ERROR] Failed to install Python dependencies.

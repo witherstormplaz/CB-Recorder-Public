@@ -37,6 +37,11 @@ The script will automatically detect your environment, silently install all nece
 
 ---
 
+## 🛠️ Upcoming Features
+- **Standalone `.exe` Compiler:** We are currently engineering a pipeline using PyInstaller and Electron-Builder to bundle the entire Python/Node ecosystem into a single, portable `.exe` file. Future releases will not require you to install Node or Python at all!
+
+---
+
 ## CLI Usage (Advanced)
 
 If you prefer to bypass the UI and use the raw backend engine on a headless server, the core python script is still fully accessible.
