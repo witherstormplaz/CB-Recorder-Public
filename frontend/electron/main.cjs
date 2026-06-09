@@ -45,7 +45,11 @@ ipcMain.on('start-recording', (event, options) => {
   // Pointing to main.py one level up from frontend folder
   const scriptPath = path.join(__dirname, '../../main.py');
   
-  const args = [scriptPath, url];
+  // Force recordings to save within the frontend directory
+  const outputDir = path.join(__dirname, '../recordings');
+  
+  // Use -u to force Python into unbuffered mode so logs instantly pipe to UI
+  const args = ['-u', scriptPath, url, '-o', outputDir];
   if (duration && duration.trim() !== '') {
     args.push('--duration', duration);
   }
@@ -86,7 +90,7 @@ ipcMain.on('stop-recording', () => {
       mainWindow.webContents.send('recording-status', 'Stopping gracefully...');
       mainWindow.webContents.send('recording-log', '[system] Sending kill signal to finalize files...');
     }
-    // Graceful stop using SIGTERM (we added handler in main.py)
-    recorderProcess.kill('SIGTERM');
+    // Windows safe IPC shutdown via stdin
+    recorderProcess.stdin.write('STOP\n');
   }
 });

@@ -66,6 +66,11 @@ export default function App() {
       window.electronAPI.onLog((log: string) => {
         const lines = log.split('\n').filter(l => l.trim().length > 0);
         setLogs(prev => [...prev.slice(-100), ...lines]); // Keep last 100 lines
+        
+        // Dynamically update status when streamlink starts downloading
+        if (log.includes('Opening stream') || log.includes('Writing output to')) {
+          setStatus('Downloading segments...');
+        }
       });
       window.electronAPI.onStatus((newStatus: string) => {
         setStatus(newStatus);
@@ -136,9 +141,8 @@ export default function App() {
           <div className="relative z-30" style={{ WebkitAppRegion: 'no-drag' } as any}>
             <div className="text-center mb-8">
               <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-yellow-100 via-yellow-400 to-amber-600 drop-shadow-sm">
-                Recorder V2
+                Chaturbate Recorder V2
               </h1>
-              <p className="text-sm text-yellow-100/50 mt-2 font-medium tracking-wide">LIQUID GLASS EDITION</p>
             </div>
 
             <div className="space-y-6">
@@ -232,7 +236,7 @@ export default function App() {
                   </>
                 )}
               </div>
-              <div className="absolute inset-0 -translate-x-[150%] skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:animate-[shine_1.5s_ease-out_infinite]" />
+                <div className="absolute inset-0 -translate-x-[150%] skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:animate-[shine_2s_linear_infinite]" />
             </motion.button>
           </div>
         </motion.div>

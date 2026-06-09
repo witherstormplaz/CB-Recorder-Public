@@ -64,7 +64,9 @@ def _merge_streams(video_path: str, audio_path: str, final_path: str) -> bool:
         "ffmpeg", "-hide_banner", "-loglevel", "warning", "-y",
         "-i", video_path,
         "-i", audio_path,
-        "-c", "copy",
+        "-c:v", "copy",
+        "-c:a", "aac",
+        "-async", "1",
         "-map", "0:v:0",
         "-map", "1:a:0?",
         "-movflags", "+faststart",
@@ -166,11 +168,24 @@ def record_stream(
 
     processes = []
     
+    # IPC Stdin Listener for Windows graceful shutdown
+    import threading
+    stop_event = threading.Event()
+    def listen_stdin():
+        try:
+            for line in sys.stdin:
+                if "STOP" in line:
+                    stop_event.set()
+                    break
+        except Exception:
+            pass
+    threading.Thread(target=listen_stdin, daemon=True).start()
+
     # Function to spawn streamlink downloader
     def spawn_downloader(url, out_path):
         cmd = [
             sys.executable, "-m", "streamlink",
-            "--loglevel", "error",
+            "--loglevel", "debug",
             "--stream-segment-threads", "3",
             "--stream-timeout", "15",
             url, "best",
@@ -204,6 +219,10 @@ def record_stream(
                 stopped_reason = "duration limit reached"
                 break
                 
+            if stop_event.is_set():
+                stopped_reason = "user cancelled via UI"
+                break
+
             time.sleep(1)
             
     except KeyboardInterrupt:
