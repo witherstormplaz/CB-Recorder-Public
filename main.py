@@ -70,6 +70,15 @@ def main():
 
     args = parser.parse_args()
 
+    import signal
+    
+    def signal_handler(sig, frame):
+        print("\n\nCancelled by user (Signal).")
+        sys.exit(0)
+        
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
     try:
         record_stream(
             url=args.url,
@@ -78,6 +87,8 @@ def main():
             cookies_from_browser=args.cookies_from_browser,
             duration=args.duration,
         )
+    except SystemExit:
+        pass
     except KeyboardInterrupt:
         print("\n\nCancelled by user.")
         sys.exit(0)
