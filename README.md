@@ -56,3 +56,10 @@ python main.py https://chaturbate.com/username/ -c cookies.txt
 2. Spawns two independent, multi-threaded `streamlink` instances.
 3. Streamlink concurrently pulls down raw `.ts` chunks from the server with aggressive retry caching, completely eliminating packet loss.
 4. Upon pressing `Ctrl+C` or reaching the time limit, the script cleanly cuts off the background workers and fires an `ffmpeg` command to mux the temporary TS streams into a perfect, standard `.mp4` container.
+
+---
+
+## The Future: V2
+We are currently planning a massive **V2 upgrade** to transition this tool from a simple CLI script into a full standalone desktop application featuring a modern, physics-based **Liquid Glass UI**. 
+
+If you are interested in how the App will be structured, check out the [V2_PLAN.md](V2_PLAN.md) document in this repository!
