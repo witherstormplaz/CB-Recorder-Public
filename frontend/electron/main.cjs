@@ -7,16 +7,19 @@ let recorderProcess = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 900,
+    height: 700,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       nodeIntegration: false,
       contextIsolation: true
     },
-    titleBarStyle: 'hiddenInset',
-    backgroundColor: '#000000',
+    frame: false,
+    transparent: true,
+    backgroundColor: '#00000000',
   });
+
+  mainWindow.setMenu(null);
 
   if (!app.isPackaged) {
     mainWindow.loadURL('http://localhost:5173');

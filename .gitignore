@@ -1,6 +1,6 @@
 __pycache__/
 recordings/
-*.ts
+/*.ts
 *.part
 *.mp4
 dist/
