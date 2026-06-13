@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 
@@ -37,19 +37,43 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit();
 });
 
+ipcMain.handle('select-directory', async () => {
+  if (!mainWindow) return null;
+  const result = await dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  });
+  if (result.canceled) return null;
+  return result.filePaths[0];
+});
+
 // IPC handlers for Python backend
 ipcMain.on('start-recording', (event, options) => {
   if (recorderProcess) return;
 
-  const { url, duration, browser } = options;
-  // Pointing to main.py one level up from frontend folder
-  const scriptPath = path.join(__dirname, '../../main.py');
+  const { url, duration, browser, outputDir } = options;
   
-  // Force recordings to save within the frontend directory
-  const outputDir = path.join(__dirname, '../recordings');
-  
-  // Use -u to force Python into unbuffered mode so logs instantly pipe to UI
-  const args = ['-u', scriptPath, url, '-o', outputDir];
+  let exePath;
+  let args;
+
+  if (app.isPackaged) {
+    // In production, run the bundled PyInstaller backend executable
+    exePath = path.join(process.resourcesPath, 'backend.exe');
+    // The executable is already unbuffered natively
+    args = [url];
+  } else {
+    // In development, run the python script
+    exePath = 'python';
+    const scriptPath = path.join(__dirname, '../../main.py');
+    // Use -u to force Python into unbuffered mode
+    args = ['-u', scriptPath, url];
+  }
+
+  // Save recordings into the user-selected directory, or fallback
+  const finalOutputDir = outputDir && outputDir.trim() !== ''
+    ? outputDir
+    : (app.isPackaged ? path.join(app.getPath('documents'), 'ChaturbateRecordings') : path.join(__dirname, '../recordings'));
+
+  args.push('-o', finalOutputDir);
   if (duration && duration.trim() !== '') {
     args.push('--duration', duration);
   }
@@ -59,8 +83,8 @@ ipcMain.on('start-recording', (event, options) => {
 
   mainWindow.webContents.send('recording-status', 'Starting engine...');
 
-  // Spawn python
-  recorderProcess = spawn('python', args);
+  // Spawn python or backend.exe
+  recorderProcess = spawn(exePath, args);
 
   recorderProcess.stdout.on('data', (data) => {
     if (mainWindow) {

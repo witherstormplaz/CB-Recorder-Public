@@ -3,3 +3,7 @@ recordings/
 *.ts
 *.part
 *.mp4
+dist/
+build/
+frontend/release/
+backend.spec

@@ -19,14 +19,13 @@ This tool solves the problem entirely by:
 
 ## 🚀 1-Click Installation (Windows)
 
-We have packaged the entire application so it can be installed and launched instantly without touching a terminal.
+We have packaged the entire application into a single executable so it can be installed and launched instantly.
 
-1. Install **[Python 3.10+](https://www.python.org/downloads/)** and **[Node.js](https://nodejs.org/)**.
-2. Install **[FFmpeg](https://ffmpeg.org/download.html)** and ensure it is added to your system's PATH.
-3. Clone this repository or Download the ZIP.
-4. Double-click the **`Start.bat`** file.
+1. Go to the **Releases** tab.
+2. Download `Chaturbate Recorder V2 Setup.exe`.
+3. Double-click to install and launch!
 
-The script will automatically detect your environment, silently install all necessary Python and React dependencies, and instantly launch the Liquid Glass UI.
+*(If you are developing or compiling from source, please see the Advanced Usage section.)*
 
 ## Features
 
@@ -37,8 +36,11 @@ The script will automatically detect your environment, silently install all nece
 
 ---
 
-## 🛠️ Upcoming Features
-- **Standalone `.exe` Compiler:** We are currently engineering a pipeline using PyInstaller and Electron-Builder to bundle the entire Python/Node ecosystem into a single, portable `.exe` file. Future releases will not require you to install Node or Python at all!
+## 🛠️ The Standalone Release (No Installation Required!)
+We have fully bundled the Python backend (via PyInstaller) and the React UI (via Electron-Builder) into a single, portable executable. 
+You do **NOT** need to install Python. You do **NOT** need to install Node.js.
+
+Just download `Chaturbate Recorder V2 Setup.exe` from the Releases page and run it!
 
 ---
 

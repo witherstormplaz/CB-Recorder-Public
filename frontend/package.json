@@ -39,5 +39,25 @@
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12",
     "wait-on": "^9.0.10"
+  },
+  "build": {
+    "appId": "com.witherstormplaz.chaturbaterecorder",
+    "productName": "Chaturbate Recorder V2",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../dist/backend.exe",
+        "to": "backend.exe"
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    }
   }
 }

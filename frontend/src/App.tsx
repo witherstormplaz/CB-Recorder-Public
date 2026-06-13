@@ -5,8 +5,9 @@ import { Play, Square, Settings, Clock, Globe, TerminalSquare } from 'lucide-rea
 declare global {
   interface Window {
     electronAPI?: {
-      startRecording: (options: { url: string, duration: string, browser: string }) => void;
+      startRecording: (options: { url: string, duration: string, browser: string, outputDir: string }) => void;
       stopRecording: () => void;
+      selectDirectory: () => Promise<string | null>;
       onLog: (callback: (log: string) => void) => void;
       onStatus: (callback: (status: string) => void) => void;
     };
@@ -17,6 +18,7 @@ export default function App() {
   const [url, setUrl] = useState('');
   const [duration, setDuration] = useState('');
   const [browser, setBrowser] = useState('');
+  const [outputDir, setOutputDir] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [status, setStatus] = useState('Idle');
   
@@ -47,7 +49,7 @@ export default function App() {
       setStatus('Starting engine...');
       setLogs(['[system] Initializing streamlink engine...']);
       if (window.electronAPI) {
-        window.electronAPI.startRecording({ url, duration, browser });
+        window.electronAPI.startRecording({ url, duration, browser, outputDir });
       } else {
         setLogs(prev => [...prev, '[warning] Running in browser mock mode.']);
       }
@@ -124,7 +126,7 @@ export default function App() {
           animate={{ opacity: 1, x: isRecording ? "calc(-50% - 220px)" : "-50%", y: "-50%" }}
           transition={{ duration: 0.8, type: "spring", bounce: 0.2 }}
           className="absolute top-1/2 left-1/2 z-20 w-[420px] p-8 rounded-[2.5rem] bg-white/[0.04] backdrop-blur-3xl shadow-2xl overflow-hidden group border border-white/10 flex flex-col justify-between pointer-events-auto"
-          style={{ boxShadow: '0 25px 50px -12px rgba(251, 191, 36, 0.15)', height: '540px' }}
+          style={{ boxShadow: '0 25px 50px -12px rgba(251, 191, 36, 0.15)', height: '620px' }}
         >
           {/* Real-time Cursor Glare */}
           <motion.div
@@ -160,6 +162,35 @@ export default function App() {
                     disabled={isRecording}
                     className="w-full bg-black/30 backdrop-blur-xl border border-white/10 rounded-2xl px-5 py-4 text-sm text-yellow-50 placeholder:text-yellow-100/30 focus:outline-none focus:ring-2 focus:ring-yellow-500/50 transition-all disabled:opacity-50 shadow-inner"
                   />
+                </div>
+              </div>
+
+              {/* Save Location Row */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-yellow-500/70 ml-2">
+                  <span className="text-xs font-bold uppercase tracking-widest">Save Location</span>
+                </div>
+                <div className="relative group">
+                  <input
+                    type="text"
+                    value={outputDir}
+                    onChange={(e) => setOutputDir(e.target.value)}
+                    placeholder="Default: Documents/ChaturbateRecordings"
+                    className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-yellow-500/30 transition-all shadow-inner text-yellow-50 placeholder-white/20 pr-24"
+                    disabled={isRecording}
+                  />
+                  <button
+                    onClick={async () => {
+                      if (window.electronAPI) {
+                        const dir = await window.electronAPI.selectDirectory();
+                        if (dir) setOutputDir(dir);
+                      }
+                    }}
+                    disabled={isRecording}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-bold text-yellow-500/70 transition-colors disabled:opacity-50"
+                  >
+                    BROWSE
+                  </button>
                 </div>
               </div>
 
